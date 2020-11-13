@@ -13,6 +13,9 @@
  * A23 specific configuration
  */
 
+#define CONFIG_BOOTCOUNT_LIMIT
+#define CONFIG_BOOTCOUNT_ENV
+
 #ifdef CONFIG_USB_EHCI_HCD
 #define CONFIG_USB_EHCI_SUNXI
 #endif
