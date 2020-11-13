@@ -1,5 +1,6 @@
 #ifndef HEADER_CONFIG_MENDER_DEFINES_H
 #define HEADER_CONFIG_MENDER_DEFINES_H
+#endif
 
 /* Shell variables */
 #define MENDER_BOOT_PART_NUMBER 1
