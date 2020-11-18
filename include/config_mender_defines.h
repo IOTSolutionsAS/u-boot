@@ -23,7 +23,7 @@
 /* For sanity checks. */
 #define MENDER_BOOTENV_SIZE 0x4000
 
-#define MENDER_BOOT_KERNEL_TYPE "bootm"
+#define MENDER_BOOT_KERNEL_TYPE "bootz"
 #define MENDER_KERNEL_NAME "zImage"
 #define MENDER_DTB_NAME "sun8i-h3-nanopi-r1.dtb"
 #define MENDER_UBOOT_PRE_SETUP_COMMANDS ""
