@@ -140,6 +140,8 @@
 # define MENDER_LOAD_KERNEL_AND_FDT                                     \
     "if test \"${fdt_addr_r}\" != \"\"; then "                          \
     "load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; " \
+    "fdt addr ${fdt_addr_r}; "                                          \
+    "fdt set mmc${boot_mmc} boot_device <1>; "                          \
     "fi; "                                                              \
     "load ${mender_uboot_root} ${kernel_addr_r} /boot/${mender_kernel_name}; "
 #endif
