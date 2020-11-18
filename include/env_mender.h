@@ -139,11 +139,11 @@
     "setenv bootargs root=${mender_kernel_root} ${bootargs}; "
 # define MENDER_LOAD_KERNEL_AND_FDT                                     \
     "if test \"${fdt_addr_r}\" != \"\"; then "                          \
-    "load ${mender_uboot_root} ${fdt_addr_r} /u-boot/${mender_dtb_name}; " \
+    "load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; " \
     "fdt addr ${fdt_addr_r}; "                                          \
     "fdt set mmc${boot_mmc} boot_device <1>; "                          \
     "fi; "                                                              \
-    "load ${mender_uboot_root} ${kernel_addr_r} /u-boot/${mender_kernel_name}; "
+    "load ${mender_uboot_root} ${kernel_addr_r} /boot/${mender_kernel_name}; "
 #endif
 
 #define CONFIG_MENDER_BOOTCOMMAND                                       \
