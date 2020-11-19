@@ -1,11 +1,15 @@
 # Patches
+This documents describes all changes made to the original U-Boot source. Please ref. [README.md](README.md)
+
+## Summary
+
 For an up to date difference report, please use `git diff` between branches:
 ```
 $ git clone https://github.com/IOTSolutionsAS/u-boot.git -b sunxi-v2017.x_mender
 $ git diff origin/sunxi-v2017.x origin/sunxi-v2017.x_mender
 ```
 
-The following files have been changed based on patches from [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)
+The U-Boot source have been changed based on patches from [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)
 
 * 0001-Add-missing-header-which-fails-on-recent-GCC.patch
 * 0002-Generic-boot-code-for-Mender.patch
@@ -14,7 +18,10 @@ The following files have been changed based on patches from [Meta Mender - patch
 
 These patches may (or may not) be applied autopmatically by using `git apply <patch>`. If automatic `apply` does not work, the patches must be included manually.
 
-## configs/nanopi_h3_defconfig
+Some changes are also manually applied based on [Mender from scratch](https://hub.mender.io/t/mender-from-scratch/391) and existing U-Boot configuration for NanoPi R1.
+
+## Details
+### File `configs/nanopi_h3_defconfig`
 Ref. [Mender from scratch](https://hub.mender.io/t/mender-from-scratch/391)<br>
 Remove:
 * `CONFIG_ENV_OFFSET=0x200000`
@@ -24,16 +31,16 @@ Add:
 * `CONFIG_USE_BOOTARGS=y`
 * `CONFIG_BOOTARGS="console=ttyS0,115200 panic=10 rootfstype=ext4 rw rootwait fsck.epair=yes"`
 
-## env/Kconfig
-Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)<br>
+### File `env/Kconfig`
+Ref. [Mender from scratch](https://hub.mender.io/t/mender-from-scratch/391)<br>
 Change:
 * ENV_OFFSET: `default 0x400000 if ARCH_SUNXI` (was 0x88000)
 * ENV_SIZE: `default 0x4000 if ARCH_SUNXI` (was 0x20000)
 
-## include/config_mender.h
+### File `include/config_mender.h`
 New file. Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)
 
-## include/config_mender_defines.h
+### File `include/config_mender_defines.h`
 New file. Ref. [Mender from scratch](https://hub.mender.io/t/mender-from-scratch/391)
 ```
 #ifndef HEADER_CONFIG_MENDER_DEFINES_H
@@ -68,14 +75,17 @@ New file. Ref. [Mender from scratch](https://hub.mender.io/t/mender-from-scratch
 #define MENDER_UBOOT_POST_SETUP_COMMANDS ""
 ```
 
-## include/configs/sun8i.h
-_Note: Additions should be in `include/friendlyelec/boardtype.h`, but this file is not included early enough..._<br>
+### File `include/configs/sun8i.h`
+Ref. [Mender from scratch](https://hub.mender.io/t/mender-from-scratch/391)
+
 Add:
 * `#define CONFIG_BOOTCOUNT_LIMIT`
 * `#define CONFIG_BOOTCOUNT_ENV`
 * `#define CONFIG_SYS_REDUNDAND_ENVIRONMENT`
 
-## include/env_default.h
+_Note: Additions should be in `include/friendlyelec/boardtype.h`, but this file is not included early enough..._<br>
+
+### File `include/env_default.h`
 Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)<br>
 Add:
 * `#include <env_mender.h>`
@@ -84,10 +94,10 @@ Add:
 Change:
 * `CONFIG_BOOTCOMMAND` -> `CONFIG_MENDER_BOOTCOMMAND`
 
-## include/env_mender.h
+### File `include/env_mender.h`
 New file. Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)
 
-Change the `MENDER_LOAD_KERNEL_AND_FDT` to boot on correctly:
+Change the `MENDER_LOAD_KERNEL_AND_FDT` to boot on correctly. Based on existing boot script for NanoPi R1:
 ```
 # define MENDER_LOAD_KERNEL_AND_FDT                                         \
     "if test \"${fdt_addr_r}\" != \"\"; then "                              \
@@ -99,12 +109,12 @@ Change the `MENDER_LOAD_KERNEL_AND_FDT` to boot on correctly:
 #endif
 ```
 
-## scripts/Makefile.autoconf
+### File `scripts/Makefile.autoconf`
 Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)<br>
 Add:
 * `echo \#include \<config_mender.h\>`
 
-## tools/env/fw_env.c
+### File `tools/env/fw_env.c`
 Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)<br>
 Add:
 * `#include <stdint.h>`
