@@ -19,6 +19,6 @@ This is a modified U-Boot port for devices from [FriendylElec/FriendlyArm](https
 Source code for different supported devices are placed in separate branches. 
 | Device | Source branch | Mender branch |
 | --- | --- | --- |
-| [Nano Pi R1](https://www.friendlyarm.com/index.php?route=product/product&product_id=248) | [sunxi-v2017.x](https://github.com/IOTSolutionsAS/u-boot/tree/sunxi-v2017.x) | [sunxi-v2017.x_mender](https://github.com/IOTSolutionsAS/u-boot/tree/sunxi-v2017.x_mender) | 
+| [NanoPi R1](https://www.friendlyarm.com/index.php?route=product/product&product_id=248) | [sunxi-v2017.x](https://github.com/IOTSolutionsAS/u-boot/tree/sunxi-v2017.x) | [sunxi-v2017.x_mender](https://github.com/IOTSolutionsAS/u-boot/tree/sunxi-v2017.x_mender) | 
 
 
