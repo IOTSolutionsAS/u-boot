@@ -15,24 +15,26 @@ The following files have been changed based on patches from [Meta Mender - patch
 These patches may (or may not) be applied autopmatically by using `git apply <patch>`. If automatic `apply` does not work, the patches must be included manually.
 
 ## configs/nanopi_h3_defconfig
-Remove 
+Ref. [Mender from scratch](https://hub.mender.io/t/mender-from-scratch/391)<br>
+Remove:
 * `CONFIG_ENV_OFFSET=0x200000`
 
-Add
+Add:
 * `CONFIG_ENV_IS_IN_MMC=y`
 * `CONFIG_USE_BOOTARGS=y`
 * `CONFIG_BOOTARGS="console=ttyS0,115200 panic=10 rootfstype=ext4 rw rootwait fsck.epair=yes"`
 
 ## env/Kconfig
-Change 
+Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)<br>
+Change:
 * ENV_OFFSET: `default 0x400000 if ARCH_SUNXI` (was 0x88000)
 * ENV_SIZE: `default 0x4000 if ARCH_SUNXI` (was 0x20000)
 
 ## include/config_mender.h
-New file
+New file. Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)
 
 ## include/config_mender_defines.h
-New file:
+New file. Ref. [Mender from scratch](https://hub.mender.io/t/mender-from-scratch/391)
 ```
 #ifndef HEADER_CONFIG_MENDER_DEFINES_H
 #define HEADER_CONFIG_MENDER_DEFINES_H
@@ -67,27 +69,42 @@ New file:
 ```
 
 ## include/configs/sun8i.h
-_Note: Additions should be in `include/friendlyelec/boardtype.h`, but this file is not included early enough..._
-Add
+_Note: Additions should be in `include/friendlyelec/boardtype.h`, but this file is not included early enough..._<br>
+Add:
 * `#define CONFIG_BOOTCOUNT_LIMIT`
 * `#define CONFIG_BOOTCOUNT_ENV`
 * `#define CONFIG_SYS_REDUNDAND_ENVIRONMENT`
 
 ## include/env_default.h
-Add
+Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)<br>
+Add:
 * `#include <env_mender.h>`
 * `MENDER_ENV_SETTINGS`
 
-Change 
+Change:
 * `CONFIG_BOOTCOMMAND` -> `CONFIG_MENDER_BOOTCOMMAND`
 
 ## include/env_mender.h
-New file
+New file. Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)
+
+Change the `MENDER_LOAD_KERNEL_AND_FDT` to boot on correctly:
+```
+# define MENDER_LOAD_KERNEL_AND_FDT                                         \
+    "if test \"${fdt_addr_r}\" != \"\"; then "                              \
+    "load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; "    \
+    "fdt addr ${fdt_addr_r}; "                                              \
+    "fdt set mmc${boot_mmc} boot_device <1>; "                              \
+    "fi; "                                                                  \
+    "load ${mender_uboot_root} ${kernel_addr_r} /boot/${mender_kernel_name}; "
+#endif
+```
 
 ## scripts/Makefile.autoconf
-Add
+Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)<br>
+Add:
 * `echo \#include \<config_mender.h\>`
 
 ## tools/env/fw_env.c
-Add
+Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)<br>
+Add:
 * `#include <stdint.h>`
