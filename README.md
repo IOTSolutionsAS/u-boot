@@ -62,3 +62,60 @@ fw_env.config
 fw_printenv
 u-boot-sunxi-with-spl.bin
 ```
+
+## Mender integration
+Note: This is only a brief description on how to create the final Mender disk image for the NanoPi R1 based on the Mender U-Boot built in [previous step][#result]. Further integration with mender follow the instructions on [Convert a Mender Debian image](https://docs.mender.io/system-updates-debian-family/convert-a-mender-debian-image)
+
+### Files from U-Boot
+Place the files from U-Boot build in [previous step][#result] in a folder `mender-convert/u-boot-files/`
+```
+fw_env.config
+fw_printenv
+u-boot-sunxi-with-spl.bin
+```
+### Configuration
+Create a configuration file for NanoPi R1 and store it in `mender-convert/configs/nanopi_r1_config`:
+
+```
+MENDER_DEVICE_TYPE="NanoPi_R1"
+MENDER_GRUB_EFI_INTEGRATION=n
+MENDER_KERNEL_IMAGETYPE="zImage"
+MENDER_IGNORE_MISSING_EFI_STUB=1
+
+# 8MB alignment
+MENDER_PARTITION_ALIGNMENT="8388608"
+MENDER_STORAGE_TOTAL_SIZE_MB="7456"
+MENDER_COMPRESS_DISK_IMAGE="gzip"
+
+function platform_modify() {
+  log_info "Copying boot-files to rootfs/boot/"
+  run_and_log_cmd "sudo cp -R work/boot/* work/rootfs/boot/"
+
+  log_info "Installing fw_printenv and fw_setenv"
+  run_and_log_cmd "sudo install -m 755 u-boot-files/fw_printenv work/rootfs/sbin/fw_printenv"
+  run_and_log_cmd "sudo ln -fs /sbin/fw_printenv work/rootfs/sbin/fw_setenv"
+
+  run_and_log_cmd "sudo ln -fs /sbin/fw_printenv work/rootfs/usr/bin/fw_printenv"
+  run_and_log_cmd "sudo ln -fs /sbin/fw_printenv work/rootfs/usr/bin/fw_setenv"
+
+  run_and_log_cmd "sudo ln -fs /sbin/fw_printenv work/rootfs/usr/local/bin/fw_printenv"
+  run_and_log_cmd "sudo ln -fs /sbin/fw_printenv work/rootfs/usr/local/bin/fw_setenv"
+
+  run_and_log_cmd "sudo cp u-boot-files/fw_env.config work/rootfs/etc"
+}
+
+function platform_package() {
+  log_info "Writing pre-compiled U-Boot image to ${img_path}"
+  run_and_log_cmd "sudo dd if=u-boot-files/u-boot-sunxi-with-spl.bin of=${img_path} bs=1024 seek=8 conv=notrunc"
+}
+```
+
+### Create image
+Follow the instructions on [Convert a Mender Debian image](https://docs.mender.io/system-updates-debian-family/convert-a-mender-debian-image). This includes setting up input disk image, release name, token et. Run the `mender-convert` command with `--config configs/nanopi_r1_config` as parameter:
+<br>
+Example:
+```
+$ mender-convert --disk-image $INPUT_DISK_IMAGE --config configs/nanopi_r1_config --overlay rootfs_overlay/
+```
+
+The produced image will contain a complete image with Mender U-Boot included on the boot partiton.
