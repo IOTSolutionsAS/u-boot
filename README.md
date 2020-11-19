@@ -7,15 +7,15 @@ SPDX-License-Identifier:	GPL-2.0+
 
 ****************
 
-This is a modified U-Boot port for [NanoPi R1](https://www.friendlyarm.com/index.php?route=product/product&product_id=248) from [FriendylElec/FriendlyArm](https://www.friendlyarm.com/) implementing patches for [Mender](https://mender.io/) so that the Mender client can run on the devices. The sorce code is a GitHub fork of the [FriendlyARM U-Boot soruce](https://github.com/friendlyarm/u-boot.git). The modifications are based on branch `sunxi-v2017.x`. This branch is further branched into `sunxi-v2017.x_mender`
+This is a modified U-Boot port for [NanoPi R1](https://www.friendlyarm.com/index.php?route=product/product&product_id=248) from [FriendylElec/FriendlyArm](https://www.friendlyarm.com/) implementing patches for [Mender](https://mender.io/) so that the Mender client can run on the devices. The sorce code is a GitHub fork of the [FriendlyARM U-Boot source](https://github.com/friendlyarm/u-boot.git). The modifications are based on branch `sunxi-v2017.x`. This branch is further branched into `sunxi-v2017.x_mender`
 
 This GitHub fork of Nano Pi R1 U-Boot including Mender patches can be located on [github.com/IOTSolutionsAS/u-boot/tree/sunxi-v2017.x_mender](https://github.com/IOTSolutionsAS/u-boot/tree/sunxi-v2017.x_mender)
 
 # References
 * Mender from scratch: https://hub.mender.io/t/mender-from-scratch/391
-* Mender without yocto: https://mender.io/blog/notes-from-a-user-on-mender-without-yocto
-* U-boot for NanoPi R1: https://wiki.friendlyarm.com/wiki/index.php/Building_U-boot_and_Linux_for_H5/H3/H2%2B
-* FriendlyARM U-Boot soruce: https://github.com/friendlyarm/u-boot.git
+* Mender without Yocto: https://mender.io/blog/notes-from-a-user-on-mender-without-yocto
+* U-Boot for NanoPi R1: https://wiki.friendlyarm.com/wiki/index.php/Building_U-boot_and_Linux_for_H5/H3/H2%2B
+* FriendlyARM U-Boot source: https://github.com/friendlyarm/u-boot.git
 
 # Building instructions
 This is based on information from [U-boot for NanoPi R1](https://wiki.friendlyarm.com/wiki/index.php/Building_U-boot_and_Linux_for_H5/H3/H2%2B)
