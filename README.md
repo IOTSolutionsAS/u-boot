@@ -64,10 +64,10 @@ u-boot-sunxi-with-spl.bin
 ```
 
 ## Mender integration
-Note: This is only a brief description on how to create the final Mender disk image for the NanoPi R1 based on the Mender U-Boot built in [previous step][#result]. Further integration with mender follow the instructions on [Convert a Mender Debian image](https://docs.mender.io/system-updates-debian-family/convert-a-mender-debian-image)
+Note: This is only a brief description on how to create the final Mender disk image for the NanoPi R1 based on the Mender U-Boot built in [previous step](#result). Further integration with mender follow the instructions on [Convert a Mender Debian image](https://docs.mender.io/system-updates-debian-family/convert-a-mender-debian-image)
 
 ### Files from U-Boot
-Place the files from U-Boot build in [previous step][#result] in a folder `mender-convert/u-boot-files/`
+Place the files from U-Boot build in [previous step](#result) in a folder `mender-convert/u-boot-files/`
 ```
 fw_env.config
 fw_printenv
