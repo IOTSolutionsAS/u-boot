@@ -136,21 +136,35 @@
     "ubifsload ${kernel_addr_r} /boot/${mender_kernel_name}; "
 #else
 # define MENDER_BOOTARGS                                                \
-    "setenv bootargs root=${mender_kernel_root} ${bootargs}; "
-# define MENDER_LOAD_KERNEL_AND_FDT                                     \
-    "if test \"${fdt_addr_r}\" != \"\"; then "                          \
-    "load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; " \
-    "fdt addr ${fdt_addr_r}; "                                          \
-    "fdt set mmc${boot_mmc} boot_device <1>; "                          \
-    "fi; "                                                              \
-    "load ${mender_uboot_root} ${kernel_addr_r} /boot/${mender_kernel_name}; "
+    "setenv bootargs root=${mender_kernel_root} console=ttyS0,115200 "  \
+    "panic=10 rootfstype=ext4 rw rootwait fsck.repair=yes; \n"
+# define MENDER_LOAD_KERNEL_AND_FDT                                                         \
+    "if test \"${fdt_addr_r}\" != \"\"; then \n"                                            \
+    "    if load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; then \n"      \
+    "        fdt addr ${fdt_addr_r}; \n"                                                    \
+    "        fdt set mmc${boot_mmc} boot_device <1>; \n"                                    \
+    "    else \n"                                                                           \
+    "        echo \"Unable to load /boot/${mender_dtb_name} from ${mender_uboot_root}\" \n" \
+    "        run mender_try_to_recover; \n"                                                 \
+    "    fi; \n"                                                                            \
+    "else \n"                                                                               \
+    "    run mender_try_to_recover; \n"                                                     \
+    "fi; \n"                                                                                \
+    "if load ${mender_uboot_root} ${kernel_addr_r} /boot/${mender_kernel_name}; then; \n"   \
+    "else \n"                                                                               \
+    "    echo \"Unable to load /boot/${mender_kernel_name} from ${mender_uboot_root}\" \n"  \
+    "    run mender_try_to_recover; \n"                                                     \
+    "    reset; \n"                                                                         \
+    "fi; \n"
 #endif
 
 #define CONFIG_MENDER_BOOTCOMMAND                                       \
-    "run mender_setup; "                                                \
+    "run mender_setup; \n"                                              \
     MENDER_BOOTARGS                                                     \
     MENDER_LOAD_KERNEL_AND_FDT                                          \
-    "${mender_boot_kernel_type} ${kernel_addr_r} - ${fdt_addr_r}; "     \
+    "echo \"Booting ${mender_boot_kernel_type} "                        \
+    "(/boot/${mender_kernel_name}) from ${mender_uboot_root}\" \n"      \
+    "${mender_boot_kernel_type} ${kernel_addr_r} - ${fdt_addr_r}; \n"   \
     "run mender_try_to_recover"
 
 #endif /* !MENDER_AUTO_PROBING */

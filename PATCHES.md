@@ -28,8 +28,6 @@ Remove:
 
 Add:
 * `CONFIG_ENV_IS_IN_MMC=y`
-* `CONFIG_USE_BOOTARGS=y`
-* `CONFIG_BOOTARGS="console=ttyS0,115200 panic=10 rootfstype=ext4 rw rootwait fsck.epair=yes"`
 
 ### File `env/Kconfig`
 Ref. [Mender from scratch](https://hub.mender.io/t/mender-from-scratch/391)<br>
@@ -97,15 +95,32 @@ Change:
 ### File `include/env_mender.h`
 New file. Ref. [Meta Mender - patches](https://github.com/mendersoftware/meta-mender/tree/master/meta-mender-core/recipes-bsp/u-boot/patches)
 
+Change the `MENDER_BOOTARGS` to boot on correctly. Based on existing boot script for NanoPi R1 (newlines included for readability):
+```
+# define MENDER_BOOTARGS                                                \
+    "setenv bootargs root=${mender_kernel_root} console=ttyS0,115200 "  \
+    "panic=10 rootfstype=ext4 rw rootwait fsck.repair=yes; \n"
+```
 Change the `MENDER_LOAD_KERNEL_AND_FDT` to boot on correctly. Based on existing boot script for NanoPi R1:
 ```
-# define MENDER_LOAD_KERNEL_AND_FDT                                         \
-    "if test \"${fdt_addr_r}\" != \"\"; then "                              \
-    "load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; "    \
-    "fdt addr ${fdt_addr_r}; "                                              \
-    "fdt set mmc${boot_mmc} boot_device <1>; "                              \
-    "fi; "                                                                  \
-    "load ${mender_uboot_root} ${kernel_addr_r} /boot/${mender_kernel_name}; "
+# define MENDER_LOAD_KERNEL_AND_FDT                                                         \
+    "if test \"${fdt_addr_r}\" != \"\"; then \n"                                            \
+    "    if load ${mender_uboot_root} ${fdt_addr_r} /boot/${mender_dtb_name}; then \n"      \
+    "        fdt addr ${fdt_addr_r}; \n"                                                    \
+    "        fdt set mmc${boot_mmc} boot_device <1>; \n"                                    \
+    "    else \n"                                                                           \
+    "        echo \"Unable to load /boot/${mender_dtb_name} from ${mender_uboot_root}\" \n" \
+    "        run mender_try_to_recover; \n"                                                 \
+    "    fi; \n"                                                                            \
+    "else \n"                                                                               \
+    "    run mender_try_to_recover; \n"                                                     \
+    "fi; \n"                                                                                \
+    "if load ${mender_uboot_root} ${kernel_addr_r} /boot/${mender_kernel_name}; then; \n"   \
+    "else \n"                                                                               \
+    "    echo \"Unable to load /boot/${mender_kernel_name} from ${mender_uboot_root}\" \n"  \
+    "    run mender_try_to_recover; \n"                                                     \
+    "    reset; \n"                                                                         \
+    "fi; \n"
 #endif
 ```
 

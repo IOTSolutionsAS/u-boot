@@ -31,7 +31,7 @@ $ . ~/.bashrc
 $ apt-get install swig python-dev python3-dev
 $ arm-linux-gcc -v
 ```
-Last command returns `gcc version 4.9.3 (ctng-1.21.0-229g-FA)` 
+Last command returns `gcc version 4.9.3 (ctng-1.21.0-229g-FA)`
 
 ## Apply Mender patches
 _**Note:** All patches have been applied to the git repo. [github.com/IOTSolutionsAS/u-boot/](https://github.com/IOTSolutionsAS/u-boot/tree/sunxi-v2017.x_mender) on branch **sunxi-v2017.x_mender**_. Please see [Patches](PATCHES.md) for details.
@@ -87,8 +87,14 @@ MENDER_PARTITION_ALIGNMENT="8388608"
 MENDER_STORAGE_TOTAL_SIZE_MB="7456"
 MENDER_COMPRESS_DISK_IMAGE="gzip"
 
+# Force mender-client verison to 2.3.1
+# - Fixes issue between mender-client and u-boot https://tracker.mender.io/browse/MEN-3970
+# - mender-client verison >= 2.4.0 requires libssl1.1, but ubuntu 16.04 has libssl1.0
+MENDER_CLIENT_VERSION="2.3.1"
+
 function platform_modify() {
   log_info "Copying boot-files to rootfs/boot/"
+  run_and_log_cmd "sudo mkdir -p work/rootfs/boot/"
   run_and_log_cmd "sudo cp -R work/boot/* work/rootfs/boot/"
 
   log_info "Installing fw_printenv and fw_setenv"
